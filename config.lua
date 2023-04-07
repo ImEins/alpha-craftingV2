@@ -24,7 +24,8 @@ Config.LevelSystem = { -- Level system config
 
     MaxLevel = 30, -- Max Level (Don't Make Above 127)
     XPMultiplier = 1.1, -- Each time you level up, it determines the amount of xp needed to reach to another level (Example: Level 1 = 100 XP, Level 2 = 220 XP, Level 3 = 330 XP...)
-    GiveXPWhenCraftFails = true -- Even if the player fails to craft the item, give experience to the player?
+    GiveXPWhenCraftFails = true, -- Even if the player fails to craft the item, give experience to the player?
+    XPWhenCraftFails = 0.4 -- If Config.GiveXPWhenCraftFails is true, how much xp will be given to the player when the player fails to craft the item?
 
 }
 

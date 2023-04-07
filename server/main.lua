@@ -88,41 +88,43 @@ AddEventHandler("alpha-craftingV2:Server:GiveItemToPlayer", function(data, dataT
     local Player = QBCore.Functions.GetPlayer(src)
     local XPFinal = nil
     local LevelFinal = nil
-    if PlayerInfo.PlayerXP + data.XP >= dataTwo then
-        XPFinal = PlayerInfo.PlayerXP + data.XP - dataTwo
-        LevelFinal = PlayerInfo.PlayerLevel + 1
-    else
-        XPFinal = PlayerInfo.PlayerXP + data.XP
-    end
-
+   
     if (math.random(1, 100) <= data.SuccessRate) then
+        -- success case
         Player.Functions.AddItem(data.Item, data.Quantity)
         TriggerClientEvent("alpha-craftingV2:Client:PlayCraftSFX", src, "success")
-
-        if Config.UseLevelSystem then
-            if PlayerInfo.PlayerLevel == Config.LevelSystem.MaxLevel then
-                return
-            end
-            exports.oxmysql:update("UPDATE players SET crafting_xp = ? WHERE citizenid = ?", {XPFinal, citizenid})
-            if LevelFinal then
-                exports.oxmysql:update("UPDATE players SET crafting_level = ? WHERE citizenid = ?", {LevelFinal, citizenid})
-            end
-            TriggerClientEvent("alpha-craftingV2:Client:UpdateLevelArea", src, XPFinal, LevelFinal)
-        end
-
     else
+        -- failure case
         TriggerClientEvent("alpha-craftingV2:Client:PlayCraftSFX", src, "failed")
+    end
 
-        if Config.UseLevelSystem then
+    if Config.UseLevelSystem then
+        if PlayerInfo.PlayerLevel == Config.LevelSystem.MaxLevel then
+            return
+        end
+
+        if (math.random(1, 100) <= data.SuccessRate) then
+            -- success case
+            XPFinal = PlayerInfo.PlayerXP + data.XP
+        else
+            -- failure case
             if Config.LevelSystem.GiveXPWhenCraftFails then
-                exports.oxmysql:update("UPDATE players SET crafting_xp = ? WHERE citizenid = ?", {XPFinal, citizenid})
-                if LevelFinal then
-                    exports.oxmysql:update("UPDATE players SET crafting_level = ? WHERE citizenid = ?", {LevelFinal, citizenid})
-                end
-                TriggerClientEvent("alpha-craftingV2:Client:UpdateLevelArea", src, XPFinal, LevelFinal)
+                XPFinal = PlayerInfo.PlayerXP + data.XP * Config.LevelSystem.XPWhenCraftFails
+            else
+                XPFinal = PlayerInfo.PlayerXP
             end
         end
 
+        if XPFinal >= dataTwo then
+            XPFinal = XPFinal - dataTwo
+            LevelFinal = PlayerInfo.PlayerLevel + 1
+        end
+
+        exports.oxmysql:update("UPDATE players SET crafting_xp = ? WHERE citizenid = ?", {XPFinal, citizenid})
+        if LevelFinal then
+            exports.oxmysql:update("UPDATE players SET crafting_level = ? WHERE citizenid = ?", {LevelFinal, citizenid})
+        end
+        TriggerClientEvent("alpha-craftingV2:Client:UpdateLevelArea", src, XPFinal, LevelFinal)
     end
 
 end)
