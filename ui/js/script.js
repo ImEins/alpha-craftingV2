@@ -135,7 +135,7 @@ const StartCraftItem = (data) => {
     };
 };
 
-const CreateMenuItems = (data) => {
+const CreateMenuItems = (data, playerLevel) => {
 
     $(".Container").empty();
 
@@ -191,10 +191,18 @@ const CreateMenuItems = (data) => {
                 CurrentItemData = data.Crafts[ItemIndex];
             };
         };
+        
+        var successRate = CurrentItemData.MinSuccessRate + (playerLevel - CurrentItemData.Level) * CurrentItemData.Ratio;
+        
+        if (successRate > CurrentItemData.MaxSuccessRate) {
+            successRate = CurrentItemData.MaxSuccessRate;
+        } else if (successRate < CurrentItemData.MinSuccessRate) {
+            successRate = CurrentItemData.MinSuccessRate;
+        }
 
         $(".ItemRecipeContainer").append(`
             <div class="ItemRecipeCraftingTime"><i class="fa-solid fa-stopwatch"></i> ${FilterTime(CurrentItemData.Time)}</div>
-            <div class="ItemRecipeSuccessRate"><i class="fa-solid fa-percent"></i> ${CurrentItemData.SuccessRate}</div>
+            <div class="ItemRecipeSuccessRate"><i class="fa-solid fa-percent"></i> ${successRate}%</div>
             <div class="ItemRecipeNeededLevel"><i class="fa-solid fa-wand-magic-sparkles"></i> ${CurrentItemData.Level}</div>
             <div class="ItemRecipeQuantity"><i class="fa-solid fa-hand-holding-hand"></i> ${CurrentItemData.Quantity}</div>
 
@@ -268,7 +276,7 @@ $(document).ready(function() {
         if (eventData.action == "OpenCraftingStation") {
             OpenUI(typeof eventData.data === "string" ? eventData.data : eventData.data[1]);
         } else if (eventData.action == "SetMenuData") {
-            CreateMenuItems(eventData.data);
+            CreateMenuItems(eventData.data, eventData.level);
         } else if (eventData.action == "SetUserInventory") {
             UserInventory = eventData.data;
         } else if (eventData.action == "SetLevelData") {

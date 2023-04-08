@@ -88,8 +88,22 @@ AddEventHandler("alpha-craftingV2:Server:GiveItemToPlayer", function(data, dataT
     local Player = QBCore.Functions.GetPlayer(src)
     local XPFinal = nil
     local LevelFinal = nil
+
+    local minSuccessRate = data.MinSuccessRate
+    local maxSuccessRate = data.MaxSuccessRate
+    local ratio = data.Ratio
+
+    local SuccessRate = minSuccessRate + (PlayerInfo.PlayerLevel - data.Level) * ratio
+
+    if SuccessRate > data.MaxSuccessRate then
+        SuccessRate = data.MaxSuccessRate
+    elseif SuccessRate < data.MinSuccessRate then
+        SuccessRate = data.MinSuccessRate
+    end
+
+    print("SuccessRate", SuccessRate)
    
-    if (math.random(1, 100) <= data.SuccessRate) then
+    if (math.random(1, 100) <= SuccessRate) then
         -- success case
         Player.Functions.AddItem(data.Item, data.Quantity)
         TriggerClientEvent("alpha-craftingV2:Client:PlayCraftSFX", src, "success")
@@ -103,7 +117,7 @@ AddEventHandler("alpha-craftingV2:Server:GiveItemToPlayer", function(data, dataT
             return
         end
 
-        if (math.random(1, 100) <= data.SuccessRate) then
+        if (math.random(1, 100) <= SuccessRate) then
             -- success case
             XPFinal = PlayerInfo.PlayerXP + data.XP
         else
