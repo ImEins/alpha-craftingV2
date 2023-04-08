@@ -78,7 +78,8 @@ end)
 RegisterNUICallback("GetMenuData", function(StationID)
     SendNUIMessage({
         action = "SetMenuData",
-        data = Config.CraftingStations[StationID.data]
+        data = Config.CraftingStations[StationID.data],
+        level = PlayerInfo.PlayerLevel
     })
 end)
 
