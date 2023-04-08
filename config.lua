@@ -335,7 +335,7 @@ Config.CraftingStations = { -- All crafting stations config
 
         Crafts = {
 
-            { -- 1
+            { -- 1repairkit
 
                 Item = "lockpick", -- Item ID
                 Label = "Lockpick", -- Item's label
@@ -344,9 +344,43 @@ Config.CraftingStations = { -- All crafting stations config
                 Icon = "../../assets/img/misc/lockpick.png", -- Item's icon
 
                 Quantity = 3, -- Quantity to be given when crafted
-                SuccessRate = 100, -- Probability of successful item production ( 90 = %90... )
-                Time = 20, -- Craft time as seconds
+                MinSuccessRate = 1, -- Probability of successful item production ( 90 = %90... )
+                MaxSuccessRate = 1, -- Probability of successful item production ( 90 = %90... )
+                Ratio = 1, -- Ratio of success rate ( 0.5 = 50% )
+                Time = 1, -- Craft time as seconds
                 Level = 0, -- Level required to craft the item
+                XP = 6, -- Amount of xp to be awarded after item crafting
+                Jobs = { -- Jobs can craft this item (Leave empty if you want everyone to be able to craft)
+
+                },
+                Requirements = {
+
+                    {
+                        Label = "Iron",
+                        ItemName = "iron",
+                        Icon = "../../assets/img/material/iron.png",
+                        Amount = 3,
+                        RemoveOnCraft = true
+                    },
+
+                }
+
+            },
+
+            { -- 1repairkit
+
+                Item = "repairkit", -- Item ID
+                Label = "Repairkit", -- Item's label
+                Description = "A device that enables a burglar to open a lock", -- Item's description
+                Category = "misccrafting", -- Item's category, must be same as CraftingStationID
+                Icon = "../../assets/img/misc/drill.png", -- Item's icon
+
+                Quantity = 3, -- Quantity to be given when crafted
+                MinSuccessRate = 20, -- Probability of successful item production ( 90 = %90... )
+                MaxSuccessRate = 100, -- Probability of successful item production ( 90 = %90... )
+                Ratio = 0.5, -- Ratio of success rate ( 0.5 = 50% )
+                Time = 1, -- Craft time as seconds
+                Level = 2, -- Level required to craft the item
                 XP = 6, -- Amount of xp to be awarded after item crafting
                 Jobs = { -- Jobs can craft this item (Leave empty if you want everyone to be able to craft)
 
